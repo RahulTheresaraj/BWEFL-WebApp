@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Bandwidth Estimation for Federated Learning</h2>
+
+<form method="POST">
+  <label for="N">Number of Clients:</label><br>
+  <input type="text" id="N" name="N"><br>
+  <label for="size_option">Size Option:</label><br>
+  <select name="size_option" id="size_option">
+    <option value="bytes">Manual Size (Bytes)</option>
+    <option value="tensors">Size in Tensors</option>
+  </select><br>
+  <label for="size_value">Size Value:</label><br>
+  <input type="text" id="size_value" name="size_value"><br>
+  <label for="U">Number of Communication Rounds:</label><br>
+  <input type="text" id="U" name="U"><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
