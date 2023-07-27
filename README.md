@@ -106,10 +106,10 @@ number of clients = ```1```
 I tested out using number of clients has 1 and got the follwoing output:
 case 1: (model size in bytes)
 ![Estimated Bandwidth_input](images/estimation3.png)
-![Estimated Bandwidth_output](images/estimation3-output.png)
+![Estimated Bandwidth_output](images/estimation3_output.png)
 Case 2:(model size in tensor dimension)
 ![Estimated Bandwidth_input](images/estimation4.png)
-![Estimated Bandwidth_output](images/estimation4-output.png)
+![Estimated Bandwidth_output](images/estimation4_output.png)
 
 
 
