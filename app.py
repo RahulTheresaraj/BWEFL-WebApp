@@ -1,48 +1,37 @@
 from flask import Flask, request, render_template
+import numpy as np
+
 app = Flask(__name__)
 
-@app.route('/')
-def form():
-    return render_template('form.html')
+def get_model_size_in_bytes(size_option, size_value):
+    if size_option == 'bytes':
+        return int(size_value), size_value
+    elif size_option == 'tensors':
+        dimensions = [int(dim) for dim in size_value.split(',')]
+        size_in_bytes = np.prod(dimensions, dtype=np.int64) * 4  # Use np.int64 to avoid overflow
+        return size_in_bytes, ', '.join(map(str, dimensions))
+    else:
+        raise ValueError('Invalid size option')
 
-@app.route('/', methods=['POST'])
+
+
+
+@app.route('/', methods=['GET', 'POST'])
 def estimate_bandwidth():
-    N = request.form.get('N')
-    U = request.form.get('U')
-    size_option = request.form.get('size_option')
-    size_value = request.form.get('size_value')
+    if request.method == 'POST':
+        N = int(request.form['N'])
+        size_option = request.form['size_option']
+        size_value = request.form['size_value']
+        P, P_value = get_model_size_in_bytes(size_option, size_value)
+        U = int(request.form['U'])
+        
+        bandwidth = N * P * U  # Bandwidth estimation formula
 
-    # Ensure the values are integers
-    try:
-        N = int(N)
-        U = int(U)
-    except ValueError:
-        return "Error: N and U inputs must be numbers."
-
-    # If size option is tensors, calculate size in bytes assuming float32 (4 bytes) per parameter
-    if size_option == 'tensors':
-        try:
-            dims = [int(dim) for dim in size_value.split(',')]
-            size_value = 4 * prod(dims)  # Assuming float32 (4 bytes) per parameter
-        except:
-            return "Error: Tensor dimensions must be comma-separated integers."
-    else:  # size option is 'manual'
-        try:
-            size_value = float(size_value)
-        except ValueError:
-            return "Error: Manual size must be a number."
-
-    # Calculate bandwidth
-    bandwidth_bytes =  N * size_value * U
-    bandwidth_MB = bandwidth_bytes / (1024 * 1024)
-
-    return render_template('result.html', bandwidth=bandwidth_MB)
-
-def prod(lst):
-    product = 1
-    for number in lst:
-        product *= number
-    return product
-
-if __name__ == '__main__':
+        # Convert bandwidth to Megabytes for user-friendly display
+        bandwidth_in_mb = bandwidth / (1024 * 1024)
+        
+        return render_template('result.html', bandwidth=bandwidth_in_mb, N=N, P=P, U=U, P_value=P_value, size_option=size_option)
+    else:
+        return render_template('form.html')
+if __name__ == "__main__":
     app.run(debug=True)

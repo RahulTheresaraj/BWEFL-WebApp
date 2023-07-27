@@ -1,23 +1,99 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content at the top */
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 60%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+h2 {
+    font-weight: bold;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+}
+
+input[type=number], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+    </style>
+  </head>
 <body>
-
-<h2>Bandwidth Estimation for Federated Learning</h2>
-
+  <div>
+<h2>Bandwidth Estimation for Federated Averaging</h2>
+<p>Bandwidth in Federated Learning is estimated by the formula: Bandwidth = N * P * U, where:<br>
+N = Number of clients<br>
+P = Size of model parameters<br>
+U = Number of global epochs (number of times the model is updated)</p>
 <form method="POST">
   <label for="N">Number of Clients:</label><br>
-  <input type="text" id="N" name="N"><br>
+  <input type="text" id="N" name="N" placeholder="e.g., 100"><br>
+  <p>This is the total number of client devices participating in federated learning.</p>
   <label for="size_option">Size Option:</label><br>
-  <select name="size_option" id="size_option">
+  <select name="size_option" id="size_option" onchange="changePlaceholderAndExplanation()">
     <option value="bytes">Manual Size (Bytes)</option>
-    <option value="tensors">Size in Tensors</option>
+    <option value="tensors">Size in Tensors (provide dimensions)</option>
   </select><br>
   <label for="size_value">Size Value:</label><br>
-  <input type="text" id="size_value" name="size_value"><br>
-  <label for="U">Number of Communication Rounds:</label><br>
-  <input type="text" id="U" name="U"><br>
+  <input type="text" id="size_value" name="size_value" placeholder="e.g., 200000"><br>
+  <p id="size_explanation">Enter the total size of the model parameters in bytes.</p>
+  <label for="U">Number of Global Epochs:</label><br>
+  <input type="text" id="U" name="U" placeholder="e.g., 50"><br>
+  <p>This is the number of times the global model is updated based on local client updates (commonly referred to as global epochs in federated learning).</p>
   <input type="submit" value="Submit">
 </form>
+</div>
+
+<script>
+function changePlaceholderAndExplanation() {
+    var dropdown = document.getElementById("size_option");
+    var sizeInput = document.getElementById("size_value");
+    var explanation = document.getElementById("size_explanation");
+    if (dropdown.value === "bytes") {
+        sizeInput.placeholder = "e.g., 200000";
+        explanation.innerText = "Enter the total size of the model parameters in bytes.";
+    } else {
+        sizeInput.placeholder = "e.g., 100,200,300";
+        explanation.innerText = "Enter the dimensions of the model's parameters. Each dimension is separated by a comma. This app assumes that each parameter is a float32, taking up 4 bytes.";
+    }
+}
+</script>
 
 </body>
 </html>

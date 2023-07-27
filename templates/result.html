@@ -1,10 +1,67 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <style>
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content at the top */
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 60%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+h2 {
+    font-weight: bold;
+    text-align: center;
+}
+
+p, h3 {
+    margin: 15px 0;
+    line-height: 1.6;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+        
+        </style>
+    </head>
 <body>
+<div>
+    <h2>Estimated Bandwidth</h2>
 
-<h2>Estimated Bandwidth</h2>
+<p>The estimated bandwidth for the specified federated learning configuration is <strong>{{ bandwidth }}</strong> Megabytes.</p>
 
-<p>{{ bandwidth }} MB</p>
+<h3>Model Size Calculation</h3>
+{% if size_option == 'bytes' %}
+<p>You entered the model size directly as {{ P_value }} bytes.</p>
+{% else %}
+<p>The model size was calculated from the tensor dimensions you provided: {{ P_value }}. Each dimension in the tensor translates to the number of float32 parameters, and each float32 parameter takes up 4 bytes. So, the total size in bytes is the product of the dimensions multiplied by 4.</p>
+<p>Example with your input: {{ P_value }} => The product of these dimensions is {{ P//4 }} (number of float32 parameters). Multiplying this by 4 (size of a float32 parameter in bytes) gives us the total model size: {{ P }} bytes.</p>
+{% endif %}
+
+<h3>Bandwidth Calculation</h3>
+<p>Bandwidth was calculated using the formula: Bandwidth (in Megabytes) = N * P * U / (1024 * 1024).</p>
+<p>In this formula:</p>
+<ul>
+    <li>N represents the number of clients participating in the federated learning process.</li>
+    <li>P is the size of the model in bytes.</li>
+    <li>U stands for the number of communication rounds, or global epochs.</li>
+</ul>
+<p>Substituting the given values: Bandwidth = {{ N }} (number of clients) * {{ P }} (model size in bytes) * {{ U }} (number of global epochs) / (1024 * 1024) = {{ bandwidth }} Megabytes</p>
+<p>The division by (1024 * 1024) in the formula is to convert the bandwidth from bytes to Megabytes. There are 1,048,576 (1024 * 1024) bytes in a Megabyte.</p>
+</div>
+
 
 </body>
 </html>
